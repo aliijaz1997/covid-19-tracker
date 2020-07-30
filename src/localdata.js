@@ -1,82 +1,118 @@
-import React, { useEffect, useState } from 'react';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
+import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 
-const StyledTableCell = withStyles((theme) => ({
-  head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
+const columns = [
+  { id: 'name', label: 'Country Name', minWidth: 170 },
+  { id: 'code', label: 'Total Cases', minWidth: 100 },
+  {
+    id: 'population',
+    label: 'Active Cases',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => value.toLocaleString('en-US'),
   },
-  body: {
-    fontSize: 14,
+  {
+    id: 'size',
+    label: 'Recovered',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => value.toLocaleString('en-US'),
   },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
+  {
+    id: 'density',
+    label: 'Deaths',
+    minWidth: 170,
+    align: 'right',
+    format: (value) => value.toFixed(2),
   },
-}))(TableRow);
-
-
+];
 
 const useStyles = makeStyles({
-  table: {
-    minWidth: 700,
-    overflow: "scroll",
-    height: 450,
+  root: {
+    width: '100%',
+  },
+  container: {
+    maxHeight: 523,
   },
 });
 
 export default function LocalDatas() {
   const classes = useStyles();
-  const [globalData, setGlobalData] = useState([{}]);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  useEffect(() => {
-    async function getData() {
-        const response = await fetch("https://api.thevirustracker.com/free-api?countryTotals=ALL");
-        let data = await response.json();
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
-        setGlobalData(Object.values(Object.values(data.countryitems)[0]));
-        console.log(Object.values(Object.values(data.countryitems)[0]))
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+  
+    const [globalData, setGlobalData] = React.useState([{}]);
+    React.useEffect(() => {
+        async function getData() {
+            const response = await fetch("https://api.thevirustracker.com/free-api?countryTotals=ALL");
+            let data = await response.json();
+            setGlobalData(Object.values(Object.values(data.countryitems)[0]));
+    //         console.log(Object.values(Object.values(data.countryitems)[0]))
+        }
+        getData();
+    }, [])
+
+    function createData(name, code, population, size) {
+      const density = population / size;
+      return { name, code, population, size, density };
     }
-    getData();
-}, [])
+    
+    
 
   return (
-    <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="customized table">
+  <Paper className={classes.root}>
+    <TableContainer className={classes.container}>
+      <Table stickyHeader aria-label="sticky table">
         <TableHead>
-          <TableRow>
-            <StyledTableCell>Country Name</StyledTableCell>
-            <StyledTableCell align="right">Total Cases</StyledTableCell>
-            <StyledTableCell align="right">Active Cases</StyledTableCell>
-            <StyledTableCell align="right">Recovered</StyledTableCell>
-            <StyledTableCell align="right">Deaths</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {globalData.map((key , ind) => (
-            <StyledTableRow key={ind}>
-              <StyledTableCell component="th" scope="row">
-                {globalData[ind].title}
-              </StyledTableCell>
-              <StyledTableCell align="right">{globalData[ind].total_cases}</StyledTableCell>
-              <StyledTableCell align="right">{globalData[ind].total_active_cases}</StyledTableCell>
-              <StyledTableCell align="right">{globalData[ind].total_recovered}</StyledTableCell>
-              <StyledTableCell align="right">{globalData[ind].total_deaths}</StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          <TableRow>
+            <TableCell>Country Name</TableCell>
+            <TableCell align="right">Total Cases</TableCell>
+            <TableCell align="right">Active Cases</TableCell>
+            <TableCell align="right">Recovered</TableCell>
+            <TableCell align="right">Deaths</TableCell>
+         </TableRow>
+      </TableHead>
+                  <TableBody>
+          {globalData.map((key , ind) => (
+            <TableRow key={ind}>
+              <TableCell component="td" scope="row">
+                {globalData[ind].title}
+              </TableCell>
+              <TableCell align="right">{globalData[ind].total_cases}</TableCell>
+              <TableCell align="right">{globalData[ind].total_active_cases}</TableCell>
+              <TableCell align="right">{globalData[ind].total_recovered}</TableCell>
+              <TableCell align="right">{globalData[ind].total_deaths}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 100]}
+        component="div"
+        count={globalData.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
+    </Paper>
   );
 }
