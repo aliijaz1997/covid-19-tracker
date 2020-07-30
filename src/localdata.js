@@ -9,32 +9,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 
-const columns = [
-  { id: 'name', label: 'Country Name', minWidth: 170 },
-  { id: 'code', label: 'Total Cases', minWidth: 100 },
-  {
-    id: 'population',
-    label: 'Active Cases',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'size',
-    label: 'Recovered',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'density',
-    label: 'Deaths',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toFixed(2),
-  },
-];
-
 const useStyles = makeStyles({
   root: {
     width: '100%',
@@ -69,12 +43,6 @@ export default function LocalDatas() {
         getData();
     }, [])
 
-    function createData(name, code, population, size) {
-      const density = population / size;
-      return { name, code, population, size, density };
-    }
-    
-    
 
   return (
   <Paper className={classes.root}>
@@ -91,8 +59,8 @@ export default function LocalDatas() {
       </TableHead>
                   <TableBody>
           {globalData.map((key , ind) => (
-            <TableRow key={ind}>
-              <TableCell component="td" scope="row">
+            <TableRow key={ind} style = {}>
+              <TableCell component="td" scope="row" >
                 {globalData[ind].title}
               </TableCell>
               <TableCell align="right">{globalData[ind].total_cases}</TableCell>
