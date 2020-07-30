@@ -59,7 +59,7 @@ export default function LocalDatas() {
       </TableHead>
                   <TableBody>
           {globalData.map((key , ind) => (
-            <TableRow key={ind} style = {}>
+            <TableRow key={ind}>
               <TableCell component="td" scope="row" >
                 {globalData[ind].title}
               </TableCell>
