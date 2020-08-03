@@ -1,45 +1,41 @@
-import React from 'react'
-import { Chart } from 'react-charts'
-import './chart.css';
+import React, { useState, useEffect } from "react"
+import { fetchDailyData } from "./api"
+import { Line } from "react-chartjs-2"
+// import styles from "./Chart.module.css"
 
+const Chart = () => {
+  const [dailyData, setDailyData] = useState([])
 
-function MyChart() {
-    const data = React.useMemo(
-      () => [
-        {
-          label: 'Series 1',
-          data: [{ x: 1, y: 10 }, { x: 2, y: 10 }, { x: 3, y: 10 }]
-        },
-        {
-          label: 'Series 2',
-          data: [{ x: 1, y: 10 }, { x: 2, y: 10 }, { x: 3, y: 10 }]
-        },
-        {
-          label: 'Series 3',
-          data: [{ x: 1, y: 10 }, { x: 2, y: 10 }, { x: 3, y: 10 }]
-        }
-      ],
-      []
-    )
-   
-    const axes = React.useMemo(
-      () => [
-        { primary: true, type: 'linear', position: 'bottom' },
-        { type: 'linear', position: 'left' }
-      ],
-      []
-    )
-   
-    return (
-      <div
-      className = "chart"
-        style={{
-          width: '900px',
-          height: '400px'
-        }}
-      >
-        <Chart data={data} axes={axes} />
-      </div>
-    )
-  }
-  export default MyChart;
+  useEffect(() => {
+    const fetchApi = async () => {
+      setDailyData(await fetchDailyData())
+    }
+    fetchApi()
+  }, [])
+
+  const lineChart = dailyData[0] ? (
+    <Line
+      data={{
+        labels: dailyData.map(({ date }) => date),
+        datasets: [
+          {
+            data: dailyData.map(data => data.confirmed),
+            label: "Infected",
+            borderColor: "#3333ff",
+            fill: true,
+          },
+          {
+            data: dailyData.map(data => data.deaths),
+            label: "Deaths",
+            borderColor: "rgba(255, 0, 0, 0.8)",
+            fill: true,
+          },
+        ],
+      }}
+    />
+  ) : null
+
+  return <div >{lineChart}</div>
+}
+
+export default Chart
