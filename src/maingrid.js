@@ -8,7 +8,7 @@ import LocalDatas from './localdata';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    backgroundColor: "dimgray",
+    backgroundColor: "lightgray",
   },
   paper: {
     padding: theme.spacing(2),

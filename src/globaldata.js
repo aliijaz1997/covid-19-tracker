@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import NumberFormat from 'react-number-format';
 const useStyles = makeStyles((theme) => ({
   root: {
+    padding: '0%',
     display: 'flex',
     flexWrap: 'wrap',
     '& > *': {

@@ -12,6 +12,7 @@ import TableRow from '@material-ui/core/TableRow';
 const useStyles = makeStyles({
   root: {
     width: '100%',
+    padding: '0%',
   },
   container: {
     maxHeight: 523,
@@ -51,10 +52,10 @@ export default function LocalDatas() {
         <TableHead>
           <TableRow>
             <TableCell>Country Name</TableCell>
-            <TableCell align="right">Total Cases</TableCell>
-            <TableCell align="right">Active Cases</TableCell>
-            <TableCell align="right">Recovered</TableCell>
-            <TableCell align="right">Deaths</TableCell>
+            <TableCell style = {{backgroundColor: 'brown'}} align="right">Total Cases</TableCell>
+            <TableCell style = {{backgroundColor: 'yellow'}} align="right">Active Cases</TableCell>
+            <TableCell style = {{backgroundColor: 'green'}} align="right">Recovered</TableCell>
+            <TableCell style = {{backgroundColor: 'red'}} align="right">Deaths</TableCell>
          </TableRow>
       </TableHead>
                   <TableBody>
